@@ -29,7 +29,7 @@ public class BreweryClient {
         return restTemplate.getForObject(apihost + BEER_PATH_V1 + uuid.toString(), BeerDto.class);
     }
 
-    public URI saveNewBeer(BeerDto beerDto){
+    public URI saveNewBeer(BeerDto beerDto){ // URI = resource locator
         return restTemplate.postForLocation(apihost + BEER_PATH_V1, beerDto);
     }
 

@@ -31,7 +31,7 @@ class BreweryClientTest {
 
         URI uri = client.saveNewBeer(beerDto);
 
-        assertNotNull(uri);
+        assertNotNull(uri); // simpliest of tests
 
         System.out.println(uri.toString());
 
