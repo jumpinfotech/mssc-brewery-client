@@ -1,6 +1,7 @@
 package guru.springframework.msscbreweryclient.web.client;
 
 import guru.springframework.msscbreweryclient.web.model.BeerDto;
+import guru.springframework.msscbreweryclient.web.model.CustomerDto;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
@@ -12,11 +13,14 @@ import java.util.UUID;
 /**
  * Created by jt on 2019-04-23.
  */
+// JT normally would have coded this against an interface, so we are not tied to a web tier, can put in a mock
+// We have a project running on 8080>here we are coming from a separate JVM talking to localhost:8080
 @ConfigurationProperties(prefix = "sfg.brewery", ignoreUnknownFields = false)
 @Component
 public class BreweryClient {
 
     public final String BEER_PATH_V1 = "/api/v1/beer/";
+    public final String CUSTOMER_PATH_V1 = "/api/v1/customer/";
     private String apihost;
 
     private final RestTemplate restTemplate;
@@ -33,15 +37,34 @@ public class BreweryClient {
         return restTemplate.postForLocation(apihost + BEER_PATH_V1, beerDto);
     }
 
-    public void updateBeer(UUID uuid, BeerDto beerDto){
-        restTemplate.put(apihost + BEER_PATH_V1 + "/" + uuid.toString(), beerDto);
+    // Jackson is wired into RestTemplate>beerDto gets transformed to JSON payload
+    public void updateBeer(UUID uuid, BeerDto beerDto){ 
+        restTemplate.put(apihost + BEER_PATH_V1 + uuid.toString(), beerDto);
     }
 
+//    uuid.toString() happens by default>JT likes it as it show intention, 
+//    java compiler adds it, unlike updateBeer it's left out here
     public void deleteBeer(UUID uuid){
-        restTemplate.delete(apihost + BEER_PATH_V1 + "/" + uuid );
+        restTemplate.delete(apihost + BEER_PATH_V1 + uuid );
     }
 
     public void setApihost(String apihost) {
         this.apihost = apihost;
+    }
+
+    public CustomerDto getCustomerById(UUID customerId){
+        return restTemplate.getForObject(apihost + CUSTOMER_PATH_V1 + customerId.toString(), CustomerDto.class);
+    }
+
+    public URI saveNewCustomer(CustomerDto customerDto){
+        return restTemplate.postForLocation(apihost + CUSTOMER_PATH_V1, customerDto);
+    }
+
+    public void updateCustomer(UUID customerId, CustomerDto customerDto){
+        restTemplate.put(apihost + CUSTOMER_PATH_V1 +  customerId, customerDto);
+    }
+
+    public void deleteCustomer(UUID customerId){
+        restTemplate.delete(apihost + CUSTOMER_PATH_V1 + customerId );
     }
 }
