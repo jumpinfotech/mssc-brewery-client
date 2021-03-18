@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Created by jt on 2019-08-07.
  */
+// a Non-blocking NIO example, can only have 1 RestTemplate hence @Component commented out 
 //@Component
 public class NIORestTemplateCustomizer implements RestTemplateCustomizer {
 
@@ -32,6 +33,7 @@ public class NIORestTemplateCustomizer implements RestTemplateCustomizer {
                 .setConnectionManager(connectionManager)
                 .build();
 
+        // deprecated maybe to favour the reactive clients
         return new HttpComponentsAsyncClientHttpRequestFactory(httpAsyncClient);
 
     }
